@@ -1,18 +1,17 @@
 {
-  "buildCommand": "pip install -r requirements.txt",
-  "functions": {
-    "api/**/*.py": {
-      "runtime": "python3.9"
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python@2.4.0"
     }
-  },
+  ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "api/index.py"
     }
-  ]
+  ],
+  "env": {
+    "FLASK_ENV": "production"
+  }
 }

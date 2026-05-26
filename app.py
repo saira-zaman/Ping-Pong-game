@@ -21,5 +21,6 @@ def api_status():
 def not_found(error):
     return jsonify({'error': 'Not found'}), 404
 
+# For local development only
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
