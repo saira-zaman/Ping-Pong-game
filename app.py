@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify
 from flask_cors import CORS
 import os
 
+# Initialize Flask app
 app = Flask(__name__, template_folder='templates', static_folder='static')
 CORS(app)
 
@@ -21,6 +22,6 @@ def api_status():
 def not_found(error):
     return jsonify({'error': 'Not found'}), 404
 
-# For local development only
+# Local development only
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
