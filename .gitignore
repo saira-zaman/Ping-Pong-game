@@ -25,3 +25,5 @@ venv/
 .DS_Store
 node_modules/
 .vercel/
+*.asm
+Ping Pong.asm
