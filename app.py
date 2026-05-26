@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 from pathlib import Path
@@ -16,6 +16,9 @@ app = Flask(
     static_url_path='/static'
 )
 
+# Disable caching in development/production for reliability
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 CORS(app)
 
 @app.route('/')
@@ -26,13 +29,19 @@ def index():
     except Exception as e:
         return jsonify({'error': f'Template error: {str(e)}'}), 500
 
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    """Explicitly serve static files"""
+    return send_from_directory(str(STATIC_DIR), filename)
+
 @app.route('/api/status', methods=['GET'])
 def api_status():
     """API endpoint to check game status"""
     return jsonify({
         'status': 'ok',
         'game': 'ping-pong',
-        'version': '1.0.0'
+        'version': '1.0.0',
+        'static_dir': str(STATIC_DIR)
     })
 
 @app.errorhandler(404)
@@ -41,7 +50,7 @@ def not_found(error):
 
 @app.errorhandler(500)
 def internal_error(error):
-    return jsonify({'error': 'Internal server error'}), 500
+    return jsonify({'error': f'Internal server error: {str(error)}'}), 500
 
 # For local development only
 if __name__ == '__main__':
