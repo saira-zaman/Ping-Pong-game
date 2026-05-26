@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping Pong Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Ping Pong Game</h1>
+            <div class="score-board">
+                <div class="player">
+                    <p>Player 1</p>
+                    <p id="score1" class="score">0</p>
+                </div>
+                <div class="vs">VS</div>
+                <div class="player">
+                    <p>Player 2</p>
+                    <p id="score2" class="score">0</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-container">
+            <canvas id="gameCanvas" width="800" height="400"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="instructions">
+                <h3>How to Play:</h3>
+                <p><strong>Player 1:</strong> W (Up) / S (Down)</p>
+                <p><strong>Player 2:</strong> ↑ (Up) / ↓ (Down)</p>
+                <p><strong>SPACE:</strong> Start/Pause Game</p>
+            </div>
+            <button onclick="resetGame()" class="btn">Reset Game</button>
+            <button onclick="togglePause()" class="btn">Pause/Resume</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='game.js') }}"></script>
+</body>
+</html>
