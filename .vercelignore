@@ -1,11 +1,19 @@
 .git
 .gitignore
+*.asm
+Ping\ Pong.asm
+Ping\ Pong\ \(1\).asm
 __pycache__
 *.pyc
+*.pyo
+*.pyd
 .env
-.venv
-*.asm
-Ping Pong.asm
+.env.local
 .pytest_cache
 .DS_Store
+.vscode
+.idea
 node_modules
+*.egg-info
+dist
+build

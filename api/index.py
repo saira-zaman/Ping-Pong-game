@@ -1,25 +1,22 @@
 """
-Vercel serverless function entry point for the Flask Ping Pong game.
+Vercel Serverless Function Entry Point
+Main WSGI application handler for the Ping Pong game
 """
 
 import sys
 import os
 from pathlib import Path
 
-# Get the parent directory (project root)
+# Add parent directory to Python path for imports
 project_root = str(Path(__file__).parent.parent)
-sys.path.insert(0, project_root)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
-# Import and configure the Flask app
+# Import the Flask application
 from app import app
 
-# This is the WSGI application that Vercel will run
-application = app
+# Export the app for Vercel to use as WSGI application
+# Vercel will look for 'app' in this module
+__all__ = ['app']
 
-# Ensure Flask is in production mode
-app.config['ENV'] = 'production'
-app.config['DEBUG'] = False
-
-# Export for Vercel
-__all__ = ['app', 'application']
 
