@@ -39,6 +39,9 @@ let ball = {
 
 let gameRunning = false;
 let gamePaused = false;
+let gameOver = false;
+let winner = null;
+const winningScore = 11; // First to 11 wins
 
 // Keyboard input
 const keys = {};
@@ -48,10 +51,12 @@ window.addEventListener('keydown', (e) => {
     
     if (e.key === ' ') {
         e.preventDefault();
-        if (!gameRunning) {
+        if (!gameRunning && !gameOver) {
             startGame();
-        } else {
+        } else if (gameRunning && !gameOver) {
             togglePause();
+        } else if (gameOver) {
+            resetGame();
         }
     }
 });
@@ -67,7 +72,7 @@ function startGame() {
 }
 
 function togglePause() {
-    if (gameRunning) {
+    if (gameRunning && !gameOver) {
         gamePaused = !gamePaused;
     }
 }
@@ -75,6 +80,8 @@ function togglePause() {
 function resetGame() {
     gameRunning = false;
     gamePaused = false;
+    gameOver = false;
+    winner = null;
     player1.score = 0;
     player2.score = 0;
     player1.y = canvas.height / 2 - paddleHeight / 2;
@@ -93,6 +100,11 @@ function updateScores() {
 }
 
 function movePaddles() {
+    // Only allow paddle movement if game is running and not over
+    if (!gameRunning || gameOver || gamePaused) {
+        return;
+    }
+
     // Player 1 controls (W/S)
     if (keys['w'] || keys['W']) {
         player1.y = Math.max(0, player1.y - player1.speed);
@@ -145,13 +157,31 @@ function moveBall() {
     if (ball.x - ball.radius < 0) {
         player2.score++;
         updateScores();
-        resetBall();
+        checkWinCondition();
+        if (!gameOver) {
+            resetBall();
+        }
     }
 
     if (ball.x + ball.radius > canvas.width) {
         player1.score++;
         updateScores();
-        resetBall();
+        checkWinCondition();
+        if (!gameOver) {
+            resetBall();
+        }
+    }
+}
+
+function checkWinCondition() {
+    if (player1.score >= winningScore) {
+        gameOver = true;
+        winner = 'Player 1';
+        gameRunning = false;
+    } else if (player2.score >= winningScore) {
+        gameOver = true;
+        winner = 'Player 2';
+        gameRunning = false;
     }
 }
 
@@ -188,11 +218,37 @@ function draw() {
     ctx.fill();
 
     // Draw pause indicator
-    if (gamePaused) {
+    if (gamePaused && gameRunning) {
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         ctx.font = 'bold 40px Arial';
         ctx.textAlign = 'center';
         ctx.fillText('PAUSED', canvas.width / 2, canvas.height / 2);
+    }
+
+    // Draw game over screen
+    if (gameOver && winner) {
+        // Semi-transparent overlay
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Winner text
+        ctx.fillStyle = '#ffff00';
+        ctx.font = 'bold 60px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(winner + ' WINS!', canvas.width / 2, canvas.height / 2 - 40);
+
+        // Instructions for restart
+        ctx.fillStyle = '#00ff00';
+        ctx.font = '20px Arial';
+        ctx.fillText('Press SPACE to play again', canvas.width / 2, canvas.height / 2 + 40);
+    }
+
+    // Draw start screen
+    if (!gameRunning && !gameOver) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.font = 'bold 40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Press SPACE to start', canvas.width / 2, canvas.height / 2);
     }
 }
 
